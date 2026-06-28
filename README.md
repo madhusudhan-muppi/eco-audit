@@ -16,7 +16,7 @@ EcoAudit is a modern web application designed to help users log their waste cont
 - **Proof of Disposal**: Attach an image of the waste. Compresses locally and saves safely via Base64 encoding.
 - **Live Feed**: A real-time dashboard showing global waste logs using Firestore `onSnapshot`.
 - **E-Waste Metric**: Calculates and displays the total E-Waste logged in real-time.
-- **Global Map**: Plots waste logs on an interactive map.
+- **Interactive 3D Globe**: Visualizes global waste logs dynamically on a stunning rotating 3D Earth using Three.js and Globe.gl.
 
 ## How to Run Locally
 

@@ -147,19 +147,43 @@ if (logForm) {
 // --- Dashboard Logic (dashboard.html) ---
 const feedContainer = document.getElementById('feed-container');
 const totalEwasteEl = document.getElementById('total-ewaste');
-let map;
-let markers = [];
+let globe = null;
 
 if (feedContainer) {
-    // Phase 5 Bonus: Initialize Leaflet Map if container exists
+    // Phase 5 Bonus: Initialize 3D Globe if container exists
     const mapEl = document.getElementById('map');
-    if (mapEl && window.L) {
-        map = L.map('map').setView([0, 0], 2);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 20
-        }).addTo(map);
+    if (mapEl && window.Globe) {
+        globe = Globe()
+            (mapEl)
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+            .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+            .backgroundColor('rgba(0,0,0,0)')
+            .width(mapEl.offsetWidth)
+            .height(400)
+            .pointAltitude(0.05)
+            .pointColor(d => {
+                if (d.category === 'E-Waste') return '#ef4444';
+                if (d.category === 'Organic') return '#22c55e';
+                return '#38bdf8'; // Plastic
+            })
+            .pointRadius(d => Math.min(d.weight * 0.1, 1)) // Scale radius slightly by weight
+            .pointsTransitionDuration(1500)
+            .pointLabel(d => `
+                <div style="background: rgba(0,0,0,0.8); padding: 8px; border-radius: 4px; color: white;">
+                    <b>${d.category}</b><br/>${d.weight.toFixed(2)} kg
+                </div>
+            `);
+            
+        // Setup initial rotation
+        globe.controls().autoRotate = true;
+        globe.controls().autoRotateSpeed = 0.5;
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            if (mapEl.offsetWidth) {
+                globe.width(mapEl.offsetWidth);
+            }
+        });
     }
 
     // Phase 3: Fetch logs and calculate totaling
@@ -169,19 +193,12 @@ if (feedContainer) {
     onSnapshot(logsQuery, (snapshot) => {
         feedContainer.innerHTML = ''; // Clear loading
         let totalEwaste = 0;
-        
-        // Clear old map markers
-        if (map) {
-            markers.forEach(m => map.removeLayer(m));
-            markers = [];
-        }
+        const globeData = [];
 
         if (snapshot.empty) {
             feedContainer.innerHTML = '<div class="loading">No waste logs found yet. Start logging!</div>';
             return;
         }
-
-        const bounds = [];
 
         snapshot.forEach((doc) => {
             const data = doc.data();
@@ -216,12 +233,14 @@ if (feedContainer) {
             `;
             feedContainer.appendChild(item);
 
-            // Phase 5: Add marker to map
-            if (map && data.latitude && data.longitude) {
-                const marker = L.marker([data.latitude, data.longitude]).addTo(map);
-                marker.bindPopup(`<b>${data.category}</b><br>${data.weight} kg`);
-                markers.push(marker);
-                bounds.push([data.latitude, data.longitude]);
+            // Collect data for Globe
+            if (globe && data.latitude && data.longitude) {
+                globeData.push({
+                    lat: data.latitude,
+                    lng: data.longitude,
+                    category: data.category,
+                    weight: data.weight
+                });
             }
         });
 
@@ -230,9 +249,9 @@ if (feedContainer) {
             totalEwasteEl.textContent = totalEwaste.toFixed(2);
         }
 
-        // Fit map to markers
-        if (map && bounds.length > 0) {
-            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        // Update Globe Points
+        if (globe && globeData.length > 0) {
+            globe.pointsData(globeData);
         }
     });
 }
