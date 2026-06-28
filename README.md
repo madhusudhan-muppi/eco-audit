@@ -13,6 +13,7 @@ EcoAudit is a modern web application designed to help users log their waste cont
 
 - **Log Waste**: Quickly log Plastic, E-Waste, or Organic waste with its weight.
 - **Geolocation**: Automatically captures coordinates securely when logging waste.
+- **Proof of Disposal**: Attach an image of the waste. Compresses locally and saves safely via Base64 encoding.
 - **Live Feed**: A real-time dashboard showing global waste logs using Firestore `onSnapshot`.
 - **E-Waste Metric**: Calculates and displays the total E-Waste logged in real-time.
 - **Global Map**: Plots waste logs on an interactive map.

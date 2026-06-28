@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Mock Data</title>
+</head>
+<body>
+    <h1>Generating Mock Data...</h1>
+    <p id="status">Please wait...</p>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDp_KuQmjefPsK5HYiU09YJgYRY9GsoRNE",
+            authDomain: "ecoaudit-da2be.firebaseapp.com",
+            projectId: "ecoaudit-da2be",
+            storageBucket: "ecoaudit-da2be.firebasestorage.app",
+            messagingSenderId: "776687262786",
+            appId: "1:776687262786:web:62f09ac87e6101255661db"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const mockLogs = [
+            { category: "Plastic", weight: 1.5, lat: 40.7128, lng: -74.0060, timeOff: 1000 * 60 * 60 * 2 },
+            { category: "E-Waste", weight: 12.0, lat: 34.0522, lng: -118.2437, timeOff: 1000 * 60 * 60 * 5 },
+            { category: "Organic", weight: 5.2, lat: 51.5074, lng: -0.1278, timeOff: 1000 * 60 * 60 * 24 },
+            { category: "E-Waste", weight: 3.5, lat: 35.6762, lng: 139.6503, timeOff: 1000 * 60 * 60 * 48 },
+            { category: "Plastic", weight: 0.8, lat: -33.8688, lng: 151.2093, timeOff: 1000 * 60 * 60 * 72 }
+        ];
+
+        async function generate() {
+            try {
+                for (const log of mockLogs) {
+                    // Create a simulated past date (mostly accurate for simple sorting)
+                    const date = new Date(Date.now() - log.timeOff);
+                    await addDoc(collection(db, "waste_logs"), {
+                        category: log.category,
+                        weight: log.weight,
+                        latitude: log.lat,
+                        longitude: log.lng,
+                        timestamp: date
+                    });
+                }
+                document.getElementById('status').innerText = "✅ Successfully added 5 mock logs! You can now view them on the dashboard and delete this file.";
+            } catch (e) {
+                console.error(e);
+                document.getElementById('status').innerText = "❌ Error adding mock data: " + e.message;
+            }
+        }
+
+        generate();
+    </script>
+</body>
+</html>

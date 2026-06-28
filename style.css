@@ -282,6 +282,15 @@ button:disabled {
   color: var(--text-muted);
 }
 
+.item-image {
+  margin-top: 1.5rem;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
 /* Map */
 .map-container {
   margin-top: 3rem;

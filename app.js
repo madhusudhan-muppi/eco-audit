@@ -35,6 +35,20 @@ if (logForm) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = 'Getting Location... <span class="spinner">⏳</span>';
 
+        const fileInput = document.getElementById('proof');
+        let imageBase64 = null;
+
+        // Process image if provided
+        if (fileInput && fileInput.files.length > 0) {
+            submitBtn.innerHTML = 'Processing Image... <span class="spinner">🖼️</span>';
+            try {
+                imageBase64 = await processImage(fileInput.files[0]);
+            } catch (err) {
+                console.error("Error processing image", err);
+                showStatus('Error processing image. Trying without it.', 'error');
+            }
+        }
+
         // Phase 2: Geolocation API
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
@@ -51,7 +65,8 @@ if (logForm) {
                             weight: weight,
                             latitude: lat,
                             longitude: lng,
-                            timestamp: serverTimestamp()
+                            timestamp: serverTimestamp(),
+                            image: imageBase64 // Optional base64 string
                         });
                         
                         showStatus('Log successfully submitted!', 'success');
@@ -85,6 +100,47 @@ if (logForm) {
     function resetButton() {
         submitBtn.disabled = false;
         submitBtn.innerHTML = 'Log Waste <span>🌿</span>';
+    }
+
+    // Image compression utility
+    function processImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 600;
+                    const MAX_HEIGHT = 600;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Compress to 0.7 quality JPEG
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    resolve(dataUrl);
+                };
+                img.onerror = (err) => reject(err);
+            };
+            reader.onerror = (err) => reject(err);
+        });
     }
 }
 
@@ -142,6 +198,11 @@ if (feedContainer) {
             const date = data.timestamp ? data.timestamp.toDate().toLocaleString() : 'Just now';
             const badgeClass = data.category.toLowerCase().replace(' ', '-');
 
+            let imageHtml = '';
+            if (data.image) {
+                imageHtml = `<img src="${data.image}" alt="Proof of Disposal" class="item-image" loading="lazy">`;
+            }
+
             item.innerHTML = `
                 <div class="item-header">
                     <span class="badge ${badgeClass}">${data.category}</span>
@@ -151,6 +212,7 @@ if (feedContainer) {
                 <div class="item-location">
                     <span>📍</span> ${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}
                 </div>
+                ${imageHtml}
             `;
             feedContainer.appendChild(item);
 
