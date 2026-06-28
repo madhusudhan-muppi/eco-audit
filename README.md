@@ -27,5 +27,3 @@ EcoAudit is a modern web application designed to help users log their waste cont
 5. The application will open in your browser at `http://127.0.0.1:5500`.
 
 *Note: The Geolocation API requires a secure context. It will work on `localhost` or `127.0.0.1`, but not on plain `http://` over a network.*
-
-
