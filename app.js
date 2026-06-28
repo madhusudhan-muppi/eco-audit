@@ -56,6 +56,9 @@ if (logForm) {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     
+                    submitBtn.innerHTML = 'Getting Place Name... <span class="spinner">🌍</span>';
+                    const placeName = await getPlaceName(lat, lng);
+
                     submitBtn.innerHTML = 'Saving to Firebase... <span class="spinner">☁️</span>';
 
                     try {
@@ -65,6 +68,7 @@ if (logForm) {
                             weight: weight,
                             latitude: lat,
                             longitude: lng,
+                            placeName: placeName,
                             timestamp: serverTimestamp(),
                             image: imageBase64 // Optional base64 string
                         });
@@ -142,6 +146,22 @@ if (logForm) {
             reader.onerror = (err) => reject(err);
         });
     }
+
+    // Reverse Geocoding Utility
+    async function getPlaceName(lat, lng) {
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`);
+            const data = await response.json();
+            if (data && data.address) {
+                const city = data.address.city || data.address.town || data.address.village || data.address.county || data.address.state;
+                const country = data.address.country;
+                return city ? `${city}, ${country}` : country;
+            }
+        } catch (e) {
+            console.error("Reverse geocode failed", e);
+        }
+        return 'Unknown Location';
+    }
 }
 
 // --- Dashboard Logic (dashboard.html) ---
@@ -155,7 +175,7 @@ if (feedContainer) {
     if (mapEl && window.Globe) {
         globe = Globe()
             (mapEl)
-            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
             .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
             .backgroundColor('rgba(0,0,0,0)')
             .width(mapEl.offsetWidth)
@@ -170,7 +190,8 @@ if (feedContainer) {
             .pointsTransitionDuration(1500)
             .pointLabel(d => `
                 <div style="background: rgba(0,0,0,0.8); padding: 8px; border-radius: 4px; color: white;">
-                    <b>${d.category}</b><br/>${d.weight.toFixed(2)} kg
+                    <b>${d.category}</b><br/>${d.weight.toFixed(2)} kg<br/>
+                    <i style="color: #cbd5e1; font-size: 0.85em;">${d.placeName || 'Unknown Location'}</i>
                 </div>
             `);
             
@@ -227,7 +248,7 @@ if (feedContainer) {
                 </div>
                 <div class="item-weight">${data.weight.toFixed(2)} <span>kg</span></div>
                 <div class="item-location">
-                    <span>📍</span> ${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}
+                    <span>📍</span> ${data.placeName ? data.placeName : `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`}
                 </div>
                 ${imageHtml}
             `;
@@ -239,7 +260,8 @@ if (feedContainer) {
                     lat: data.latitude,
                     lng: data.longitude,
                     category: data.category,
-                    weight: data.weight
+                    weight: data.weight,
+                    placeName: data.placeName
                 });
             }
         });

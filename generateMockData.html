@@ -26,11 +26,11 @@
         const db = getFirestore(app);
 
         const mockLogs = [
-            { category: "Plastic", weight: 1.5, lat: 40.7128, lng: -74.0060, timeOff: 1000 * 60 * 60 * 2 },
-            { category: "E-Waste", weight: 12.0, lat: 34.0522, lng: -118.2437, timeOff: 1000 * 60 * 60 * 5 },
-            { category: "Organic", weight: 5.2, lat: 51.5074, lng: -0.1278, timeOff: 1000 * 60 * 60 * 24 },
-            { category: "E-Waste", weight: 3.5, lat: 35.6762, lng: 139.6503, timeOff: 1000 * 60 * 60 * 48 },
-            { category: "Plastic", weight: 0.8, lat: -33.8688, lng: 151.2093, timeOff: 1000 * 60 * 60 * 72 }
+            { category: "Plastic", weight: 1.5, lat: 40.7128, lng: -74.0060, placeName: "New York, United States", timeOff: 1000 * 60 * 60 * 2 },
+            { category: "E-Waste", weight: 12.0, lat: 34.0522, lng: -118.2437, placeName: "Los Angeles, United States", timeOff: 1000 * 60 * 60 * 5 },
+            { category: "Organic", weight: 5.2, lat: 51.5074, lng: -0.1278, placeName: "London, United Kingdom", timeOff: 1000 * 60 * 60 * 24 },
+            { category: "E-Waste", weight: 3.5, lat: 35.6762, lng: 139.6503, placeName: "Tokyo, Japan", timeOff: 1000 * 60 * 60 * 48 },
+            { category: "Plastic", weight: 0.8, lat: -33.8688, lng: 151.2093, placeName: "Sydney, Australia", timeOff: 1000 * 60 * 60 * 72 }
         ];
 
         async function generate() {
@@ -43,6 +43,7 @@
                         weight: log.weight,
                         latitude: log.lat,
                         longitude: log.lng,
+                        placeName: log.placeName,
                         timestamp: date
                     });
                 }
