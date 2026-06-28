@@ -28,32 +28,4 @@ EcoAudit is a modern web application designed to help users log their waste cont
 
 *Note: The Geolocation API requires a secure context. It will work on `localhost` or `127.0.0.1`, but not on plain `http://` over a network.*
 
-## GitHub Push Instructions
 
-Since you asked how to create and push to a remote repository on GitHub, here are the steps:
-
-1. **Create a GitHub Repo**: Go to [GitHub.com](https://github.com/new), log in, and create a new repository called `eco-audit`. Do **not** initialize it with a README, .gitignore, or license (keep it completely empty).
-2. **Commit your code locally** (run these in your terminal in this project folder):
-   ```bash
-   git add .
-   git commit -m "Initial commit: EcoAudit phases 1-5"
-   ```
-3. **Link to GitHub & Push**: (Replace `YOUR_USERNAME` with your GitHub username)
-   ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/eco-audit.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-## Netlify Deployment
-
-Since you chose to deploy to Netlify, follow these steps:
-1. Push your code to GitHub using the instructions above.
-2. Go to [Netlify](https://app.netlify.com/).
-3. Click **"Add new site"** -> **"Import an existing project"**.
-4. Choose **GitHub** and authorize if prompted.
-5. Select the `eco-audit` repository.
-6. The build settings can be left blank (Publish directory will default to the root folder).
-7. Click **"Deploy Site"**. 
-8. Netlify will generate a live secure `https://` link (e.g., `https://something-random.netlify.app`). 
-9. **Test the App**: Open that link on your mobile phone, log waste, accept the location permission, and watch the dashboard update!
