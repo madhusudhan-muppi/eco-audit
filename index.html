@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoAudit | Log Waste</title>
+    <meta name="description" content="Log your waste contributions for the EcoAudit platform.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">
+            <span>🌍</span> EcoAudit
+        </a>
+        <nav class="nav-links">
+            <a href="index.html" class="active">Log Waste</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="glass-card">
+            <h1>Log Your Waste</h1>
+            <form id="log-form">
+                <div class="form-group">
+                    <label for="category">Waste Category</label>
+                    <select id="category" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <option value="Plastic">Plastic</option>
+                        <option value="E-Waste">E-Waste</option>
+                        <option value="Organic">Organic</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" step="0.01" min="0.01" placeholder="e.g. 2.5" required>
+                </div>
+
+                <button type="submit" id="submit-btn">
+                    Log Waste <span>🌿</span>
+                </button>
+                <div id="status-msg" class="status-message"></div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Core App Logic -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoAudit | Dashboard</title>
+    <meta name="description" content="View global waste contributions and real-time E-Waste metrics.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Phase 5 Bonus: Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">
+            <span>🌍</span> EcoAudit
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Log Waste</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="dashboard-header">
+            <div>
+                <h1 style="text-align: left; margin-bottom: 0.5rem;">Audit Dashboard</h1>
+                <p style="color: var(--text-muted); margin: 0;">Real-time feed of waste logged globally.</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total E-Waste Logged</div>
+                <div class="stat-value"><span id="total-ewaste">0.00</span> <span>kg</span></div>
+            </div>
+        </div>
+
+        <div id="feed-container" class="feed-grid">
+            <div class="loading">Loading live feed... 🔄</div>
+        </div>
+
+        <div class="map-container">
+            <h2>Global Log Map</h2>
+            <div id="map"></div>
+        </div>
+    </main>
+
+    <!-- Phase 5 Bonus: Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Core App Logic -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
